@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Term Tracker</string>
+    <string name="view_terms">View Terms</string>
+    <string name="android_term_tracker">Android Term Tracker</string>
+    <string name="action_delete">Delete</string>
+    <string name="delete_term">Delete term and all associated courses?</string>
+    <string name="delete_course">Delete course and all associated assessments?</string>
+    <string name="term_deleted">Term deleted</string>
+    <string name="term_updated">Term updated</string>
+    <string name="course_deleted">Course deleted</string>
+    <string name="course_updated">Course updated</string>
+    <string name="course_added">Course added</string>
+    <string name="optional_note">Optional Note</string>
+    <string name="save">Save</string>
+    <string name="view_courses">View Courses</string>
+    <string name="term_added">Term Added</string>
+    <string name="new_course">New Course</string>
+    <string name="view_assessments">View Assessments</string>
+</resources>

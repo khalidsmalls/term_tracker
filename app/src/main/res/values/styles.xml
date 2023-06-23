@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="btn_large">
+        <item name="android:textSize">@dimen/btn_large_fontsize</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:layout_marginHorizontal">
+            @dimen/btn_large_margin_horizontal
+        </item>
+    </style>
+
+    <style name="listName">
+        <item name="android:textSize">@dimen/list_text_size</item>
+        <item name="android:padding">@dimen/list_padding</item>
+    </style>
+
+    <style name="listItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:background">@android:color/holo_orange_light</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+        <item name="android:textColor">@color/gainsboro</item>
+        <item name="android:textSize">@dimen/list_text_size</item>
+    </style>
+
+    <style name="fab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_marginBottom">50dp</item>
+        <item name="android:layout_marginEnd">30dp</item>
+    </style>
+
+    <style name="datepicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="alertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    </style>
+
+
+</resources>

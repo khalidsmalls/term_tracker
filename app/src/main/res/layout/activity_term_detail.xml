@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/term_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Title"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="@id/term_start_date"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/term_title_edittext"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/term_title"
+        app:layout_constraintStart_toStartOf="@id/term_end_edittext" />
+
+    <TextView
+        android:id="@+id/term_start_date"
+        android:labelFor="@id/term_start_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Start Date"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/term_title" />
+
+    <EditText
+        android:id="@+id/term_start_edittext"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:focusableInTouchMode="false"
+        app:layout_constraintBaseline_toBaselineOf="@id/term_start_date"
+        app:layout_constraintStart_toStartOf="@id/term_end_edittext"
+        android:autofillHints=""
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/term_end_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="End Date"
+        android:textSize="25sp"
+        android:labelFor="@+id/term_end_edittext"
+        app:layout_constraintStart_toStartOf="@id/term_start_date"
+        app:layout_constraintTop_toBottomOf="@id/term_start_date" />
+
+    <EditText
+        android:id="@+id/term_end_edittext"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:focusableInTouchMode="false"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/term_end_date"
+        app:layout_constraintStart_toEndOf="@id/term_end_date"
+        android:autofillHints="" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/new_term_save_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Save"
+        style="@style/btn_large"
+        app:layout_constraintTop_toBottomOf="@id/term_end_edittext" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/view_courses_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/view_courses"
+        style="@style/btn_large"
+        app:layout_constraintTop_toBottomOf="@id/new_term_save_btn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
