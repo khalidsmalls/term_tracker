@@ -15,14 +15,17 @@ import java.util.List;
 public class CourseDetailViewModel extends AndroidViewModel {
     private final Repository mRepo;
     private final LiveData<List<Course>> mAllCourses;
+    private final List<Course> courses;
 
     public CourseDetailViewModel(@NonNull Application application) {
         super(application);
         mRepo = new Repository(application);
         mAllCourses = mRepo.getAllCourses();
+        courses = mRepo.getCourses();
     }
 
     public LiveData<List<Course>> getAllCourses() { return mAllCourses; }
+    public List<Course> getCourses() { return courses; }
 
     public void insert(Course course) { mRepo.insert(course); }
     public void update(Course course) { mRepo.update(course); }

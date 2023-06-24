@@ -29,4 +29,6 @@ public interface CourseDao {
     @Query("SELECT * FROM courses")
     LiveData<List<Course>> getAllCourses();
 
+    @Query("SELECT * FROM courses")
+    List<Course> getCourses();
 }

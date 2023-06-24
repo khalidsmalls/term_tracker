@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
                 Course.class,
                 Term.class
         },
-        version = 32,
+        version = 34,
         exportSchema = false
 )
 @TypeConverters({DateConverter.class, AssessmentTypeConverter.class})

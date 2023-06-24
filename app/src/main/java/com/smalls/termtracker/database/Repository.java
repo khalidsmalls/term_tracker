@@ -22,7 +22,7 @@ public class Repository {
     private LiveData<List<Term>> mAllTerms;
     private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Assessment>> mAllAssessments;
-    private List<Course> associatedCourses;
+    private List<Course> courses;
 
     public Repository(Application application) {
         TermDatabase db = TermDatabase.getDatabase(application);
@@ -139,6 +139,18 @@ public class Repository {
         TermDatabase.databaseWriteExecutor.execute(() -> {
             mAssessmentDao.deleteAssociatedAssessments(courseId);
         });
+    }
+
+    public List<Course> getCourses() {
+        TermDatabase.databaseWriteExecutor.execute(() -> {
+            courses = mCourseDao.getCourses();
+        });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return courses;
     }
 
 }
