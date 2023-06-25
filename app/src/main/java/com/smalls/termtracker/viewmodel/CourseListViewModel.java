@@ -17,7 +17,7 @@ import java.util.List;
 public class CourseListViewModel extends AndroidViewModel {
     private final Repository mRepo;
     private final LiveData<List<Course>> mAllCourses;
-    private final List<Course> mAssociatedCourses;
+    private final LiveData<List<Course>> mAssociatedCourses;
 
     public CourseListViewModel(@NonNull Application app, int termId) {
         super(app);
@@ -26,7 +26,7 @@ public class CourseListViewModel extends AndroidViewModel {
         mAssociatedCourses = mRepo.getAssociatedCourses(termId);
     }
 
-    public List<Course> getAssociatedCourses(int termId) {
+    public LiveData<List<Course>> getAssociatedCourses(int termId) {
         return mAssociatedCourses;
     }
 

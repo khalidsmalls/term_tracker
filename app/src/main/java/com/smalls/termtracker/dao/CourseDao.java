@@ -30,6 +30,6 @@ public interface CourseDao {
     LiveData<List<Course>> getAllCourses();
 
     @Query("SELECT * FROM courses WHERE termId = :termId")
-    List<Course> getAssociatedCourses(int termId);
+    LiveData<List<Course>> getAssociatedCourses(int termId);
 
 }

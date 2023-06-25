@@ -21,7 +21,7 @@ public class Repository {
     private LiveData<List<Term>> mAllTerms;
     private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Assessment>> mAllAssessments;
-    private List<Course> mAssociatedCourses;
+    private LiveData<List<Course>> mAssociatedCourses;
     private List<Assessment> mAssociatedAssessments;
 
     public Repository(Application application) {
@@ -102,7 +102,7 @@ public class Repository {
         });
     }
 
-     public List<Course> getAssociatedCourses(int termId) {
+     public LiveData<List<Course>> getAssociatedCourses(int termId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
             mAssociatedCourses = mCourseDao.getAssociatedCourses(termId);
         });

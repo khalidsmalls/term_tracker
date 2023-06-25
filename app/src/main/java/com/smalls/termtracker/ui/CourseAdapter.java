@@ -18,13 +18,12 @@ import java.util.List;
 
 public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder> {
     private static CourseListFragment.OnCourseSelectedListener mListener;
-    private final List<Course> mAssociatedCourses;
+    private final LiveData<List<Course>> mAssociatedCourses;
     private int mCourseId;
 
     public CourseAdapter(
-            List<Course> mCourses,
-            CourseListFragment.OnCourseSelectedListener listener,
-            int termId
+            LiveData<List<Course>> mCourses,
+            CourseListFragment.OnCourseSelectedListener listener
     ) {
         super(new CourseDiff());
         mAssociatedCourses = mCourses;
@@ -54,8 +53,8 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (mAssociatedCourses != null) {
-            mCourseId = mAssociatedCourses.get(position).getId();
-            holder.getTextView().setText(mAssociatedCourses.get(position).getTitle());
+            mCourseId = mAssociatedCourses.getValue().get(position).getId();
+            holder.getTextView().setText(mAssociatedCourses.getValue().get(position).getTitle());
             holder.getTextView().setOnClickListener(CourseClickListener);
         }
     }

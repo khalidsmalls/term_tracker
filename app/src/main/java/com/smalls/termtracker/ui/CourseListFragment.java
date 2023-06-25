@@ -32,7 +32,7 @@ public class CourseListFragment extends Fragment {
     //reference to CourseListActivity
     private OnCourseSelectedListener mListener;
     private LiveData<List<Course>> mAllCourses;
-    private List<Course> mAssociatedCourses;
+    private LiveData<List<Course>> mAssociatedCourses;
     private int mTermId;
     private CourseListViewModel mViewModel;
 
@@ -76,7 +76,7 @@ public class CourseListFragment extends Fragment {
                 false
         );
 
-        final CourseAdapter adapter = new CourseAdapter(mAssociatedCourses, mListener, mTermId);
+        final CourseAdapter adapter = new CourseAdapter(mAssociatedCourses, mListener);
         RecyclerView recyclerView = view.findViewById(R.id.course_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -87,11 +87,12 @@ public class CourseListFragment extends Fragment {
                 )
         );
 
-        mAllCourses.observe(
+        mAssociatedCourses.observe(
                 getViewLifecycleOwner(),
                 courses -> {
-                    List<Course> mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
-                    adapter.submitList(mAssociatedCourses);
+                    mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
+                    List<Course> associatedCourses = mAssociatedCourses.getValue();
+                    adapter.submitList(associatedCourses);
                 }
         );
 
