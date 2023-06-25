@@ -1,7 +1,6 @@
 package com.smalls.termtracker.database;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -22,7 +21,8 @@ public class Repository {
     private LiveData<List<Term>> mAllTerms;
     private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Assessment>> mAllAssessments;
-    private List<Course> associatedCourses;
+    private List<Course> mAssociatedCourses;
+    private List<Assessment> mAssociatedAssessments;
 
     public Repository(Application application) {
         TermDatabase db = TermDatabase.getDatabase(application);
@@ -102,9 +102,30 @@ public class Repository {
         });
     }
 
-    public void deleteAllCourses() {
-        TermDatabase.databaseWriteExecutor.execute(mCourseDao::deleteAllCourses);
-    }
+     public List<Course> getAssociatedCourses(int termId) {
+        TermDatabase.databaseWriteExecutor.execute(() -> {
+            mAssociatedCourses = mCourseDao.getAssociatedCourses(termId);
+        });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+         return mAssociatedCourses;
+     }
+
+     public List<Assessment> getAssociatedAssessments(int courseId) {
+        TermDatabase.databaseWriteExecutor.execute(() -> {
+            mAssociatedAssessments =
+                    mAssessmentDao.getAssociatedAssessments(courseId);
+        });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return mAssociatedAssessments;
+     }
 
     public void insert(Assessment assessment) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
@@ -124,10 +145,6 @@ public class Repository {
         });
     }
 
-    public void deleteAllAssessments() {
-        TermDatabase.databaseWriteExecutor.execute(mAssessmentDao::deleteAll);
-    }
-
     public void deleteAssociatedCourses(int termId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
                     mTermDao.deleteAssociatedCourses(termId);
@@ -135,7 +152,7 @@ public class Repository {
         );
     }
 
-    public void deleteAssociatedAssessmentes(int courseId) {
+    public void deleteAssociatedAssessments(int courseId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
             mAssessmentDao.deleteAssociatedAssessments(courseId);
         });

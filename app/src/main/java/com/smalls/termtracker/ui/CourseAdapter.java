@@ -1,7 +1,5 @@
 package com.smalls.termtracker.ui;
 
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,32 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.smalls.termtracker.R;
 import com.smalls.termtracker.entity.Course;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder> {
     private static CourseListFragment.OnCourseSelectedListener mListener;
-    private final LiveData<List<Course>> mAllCourses;
-    private final int mTermId;
+    private final List<Course> mAssociatedCourses;
     private int mCourseId;
-    private Executor executor;
 
     public CourseAdapter(
-            LiveData<List<Course>> courses,
+            List<Course> mCourses,
             CourseListFragment.OnCourseSelectedListener listener,
             int termId
     ) {
         super(new CourseDiff());
-        mAllCourses = courses;
+        mAssociatedCourses = mCourses;
         mListener = listener;
-        mTermId = termId;
     }
 
-    /**
-     * nested ViewHolder class
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
@@ -64,27 +53,10 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (mAllCourses.getValue() != null) {
-            List<Course> associatedCourses = mAllCourses.getValue().stream()
-                    .filter(c -> c.getTermId() == mTermId)
-                    .collect(Collectors.toList());
-
-            String text = associatedCourses.get(position).getTitle();
-            mCourseId = associatedCourses.get(position).getId();
-            holder.getTextView().setText(text);
+        if (mAssociatedCourses != null) {
+            mCourseId = mAssociatedCourses.get(position).getId();
+            holder.getTextView().setText(mAssociatedCourses.get(position).getTitle());
             holder.getTextView().setOnClickListener(CourseClickListener);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mAllCourses.getValue() != null) {
-            return (int) mAllCourses.getValue()
-                    .stream()
-                    .filter(c -> c.getTermId() == mTermId)
-                    .count();
-        } else {
-            return 0;
         }
     }
 
@@ -118,8 +90,5 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
             mListener.onCourseSelected(mCourseId);
         }
     };
-
-
-
 
 }

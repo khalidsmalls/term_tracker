@@ -1,7 +1,6 @@
 package com.smalls.termtracker.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -28,7 +27,7 @@ public class CourseDetailViewModel extends AndroidViewModel {
     public void update(Course course) { mRepo.update(course); }
     public void delete(int courseId) { mRepo.deleteCourse(courseId); }
     public void deleteAssociatedAssessments(int courseId) {
-        mRepo.deleteAssociatedAssessmentes(courseId);
+        mRepo.deleteAssociatedAssessments(courseId);
     }
 
 }

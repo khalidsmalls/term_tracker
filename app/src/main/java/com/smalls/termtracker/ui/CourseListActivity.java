@@ -14,6 +14,8 @@ import com.smalls.termtracker.R;
 
 public class CourseListActivity extends AppCompatActivity
         implements CourseListFragment.OnCourseSelectedListener {
+    private final String TERM_ID = "term_id";
+    private final String COURSE_ID = "course_id";
     private int mTermId;
 
     @Override
@@ -21,7 +23,7 @@ public class CourseListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
 
-        mTermId = getIntent().getIntExtra("TERM_ID", 0);
+        mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -29,7 +31,7 @@ public class CourseListActivity extends AppCompatActivity
         transaction.add(R.id.course_list_fragment_container, fragment);
 
         Bundle mBundle = new Bundle();
-        mBundle.putInt("TERM_ID", mTermId);
+        mBundle.putInt(TERM_ID, mTermId);
         fragment.setArguments(mBundle);
 
         transaction.commit();
@@ -41,14 +43,14 @@ public class CourseListActivity extends AppCompatActivity
     @Override
     public void onCourseSelected(int courseId) {
         Intent intent = new Intent(getApplicationContext(), CourseDetailActivity.class);
-        intent.putExtra("COURSE_ID", courseId);
-        intent.putExtra("TERM_ID", mTermId);
+        intent.putExtra(COURSE_ID, courseId);
+        intent.putExtra(TERM_ID, mTermId);
         startActivity(intent);
     }
 
     private final View.OnClickListener onAddCourseClick = v -> {
         Intent intent = new Intent(getApplicationContext(),  CourseDetailActivity.class);
-        intent.putExtra("TERM_ID", mTermId);
+        intent.putExtra(TERM_ID, mTermId);
         startActivity(intent);
     };
 

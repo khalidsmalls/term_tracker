@@ -6,12 +6,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +28,8 @@ import java.util.Locale;
 
 public class CourseDetailActivity extends AppCompatActivity
         implements DeleteDialogFragment.onDeleteDialogListener {
+    private final String TERM_ID = "term_id";
+    private final String COURSE_ID = "course_id";
     private EditText mTitleEditText;
     private EditText mStartDateEditText;
     private EditText mEndDateEditText;
@@ -52,8 +52,8 @@ public class CourseDetailActivity extends AppCompatActivity
 
         //intent will come from onCourseClickListener in the course list in the
         //term detail view
-        mCourseId = getIntent().getIntExtra("COURSE_ID", 0);
-        mTermId = getIntent().getIntExtra("TERM_ID", 0);
+        mCourseId = getIntent().getIntExtra(COURSE_ID, 0);
+        mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
         mViewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
         LiveData<List<Course>> mAllCourses = mViewModel.getAllCourses();

@@ -18,22 +18,23 @@ import android.view.ViewGroup;
 
 import com.smalls.termtracker.R;
 import com.smalls.termtracker.entity.Course;
-import com.smalls.termtracker.viewmodel.CourseDetailViewModel;
+import com.smalls.termtracker.viewmodel.CourseListViewModel;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class CourseListFragment extends Fragment {
-    //implemented by CourseListActivity
+    private final String TERM_ID = "term_id";
+
     public interface OnCourseSelectedListener {
         void onCourseSelected(int courseId);
     }
-
     //reference to CourseListActivity
     private OnCourseSelectedListener mListener;
-
     private LiveData<List<Course>> mAllCourses;
+    private List<Course> mAssociatedCourses;
+    private int mTermId;
+    private CourseListViewModel mViewModel;
 
     public CourseListFragment() {
         // Required empty public constructor
@@ -43,11 +44,23 @@ public class CourseListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        CourseDetailViewModel mViewModel = new ViewModelProvider(
-                requireActivity()
-        ).get(CourseDetailViewModel.class);
+        Bundle mBundle = getArguments();
+        if (mBundle != null) {
+            mTermId = mBundle.getInt(TERM_ID);
+        } else {
+            mTermId = 0;
+        }
+
+        mViewModel = new ViewModelProvider(
+                requireActivity(),
+                new CourseListViewModel.ViewModelFactory(
+                    this.requireActivity().getApplication(),
+                    mTermId
+                )
+        ).get(CourseListViewModel.class);
 
         mAllCourses = mViewModel.getAllCourses();
+        mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
 
         if (context instanceof OnCourseSelectedListener) {
             mListener = (OnCourseSelectedListener) context;
@@ -62,15 +75,8 @@ public class CourseListFragment extends Fragment {
                 container,
                 false
         );
-        Bundle mBundle = getArguments();
-        int mTermId;
-        if (mBundle != null) {
-            mTermId = mBundle.getInt("TERM_ID");
-        } else {
-            mTermId = 0;
-        }
 
-        final CourseAdapter adapter = new CourseAdapter(mAllCourses, mListener, mTermId);
+        final CourseAdapter adapter = new CourseAdapter(mAssociatedCourses, mListener, mTermId);
         RecyclerView recyclerView = view.findViewById(R.id.course_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -83,7 +89,10 @@ public class CourseListFragment extends Fragment {
 
         mAllCourses.observe(
                 getViewLifecycleOwner(),
-                adapter::submitList
+                courses -> {
+                    List<Course> mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
+                    adapter.submitList(mAssociatedCourses);
+                }
         );
 
         return view;
@@ -94,4 +103,5 @@ public class CourseListFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 }

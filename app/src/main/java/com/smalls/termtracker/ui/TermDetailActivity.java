@@ -33,6 +33,7 @@ import java.util.Locale;
 
 public class TermDetailActivity extends AppCompatActivity
         implements DeleteDialogFragment.onDeleteDialogListener {
+    private final String TERM_ID = "term_id";
     private EditText mTitleEditText;
     private EditText mStartDateEditText;
     private EditText mEndDateEditText;
@@ -53,7 +54,7 @@ public class TermDetailActivity extends AppCompatActivity
         }
 
         //the id of the term to be updated or default, 0, for a new term
-        mTermId = getIntent().getIntExtra(TermListActivity.TERM_ID, 0);
+        mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
         mViewModel = new ViewModelProvider(this).get(TermDetailViewModel.class);
         LiveData<List<Term>> mAllTerms = mViewModel.getAllTerms();
@@ -161,7 +162,7 @@ public class TermDetailActivity extends AppCompatActivity
 
     private final View.OnClickListener onViewCoursesClick = v -> {
         Intent intent = new Intent(getApplicationContext(), CourseListActivity.class);
-        intent.putExtra("TERM_ID", mTermId);
+        intent.putExtra(TERM_ID, mTermId);
         startActivity(intent);
     };
 
