@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/course_list_fragment_container"
+    android:id="@+id/assessment_list_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_course_fab"
+        android:id="@+id/add_assessment_fab"
         style="@style/fab"
         android:src="@drawable/baseline_add_24"
-        android:contentDescription="@string/add_course_button" />
+        android:contentDescription="@string/add_assessment_button" />
 
 </FrameLayout>

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +23,12 @@ import java.util.List;
 
 
 public class CourseListFragment extends Fragment {
-    private final String TERM_ID = "term_id";
 
     public interface OnCourseSelectedListener {
         void onCourseSelected(int courseId);
     }
     //reference to CourseListActivity
     private OnCourseSelectedListener mListener;
-    private LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mAssociatedCourses;
     private int mTermId;
     private CourseListViewModel mViewModel;
@@ -46,6 +43,7 @@ public class CourseListFragment extends Fragment {
 
         Bundle mBundle = getArguments();
         if (mBundle != null) {
+            String TERM_ID = "term_id";
             mTermId = mBundle.getInt(TERM_ID);
         } else {
             mTermId = 0;
@@ -59,8 +57,7 @@ public class CourseListFragment extends Fragment {
                 )
         ).get(CourseListViewModel.class);
 
-        mAllCourses = mViewModel.getAllCourses();
-        mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
+        mAssociatedCourses = mViewModel.getAssociatedCourses();
 
         if (context instanceof OnCourseSelectedListener) {
             mListener = (OnCourseSelectedListener) context;
@@ -76,7 +73,7 @@ public class CourseListFragment extends Fragment {
                 false
         );
 
-        final CourseAdapter adapter = new CourseAdapter(mAssociatedCourses, mListener);
+        final CourseAdapter adapter = new CourseAdapter(mListener);
         RecyclerView recyclerView = view.findViewById(R.id.course_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -90,7 +87,7 @@ public class CourseListFragment extends Fragment {
         mAssociatedCourses.observe(
                 getViewLifecycleOwner(),
                 courses -> {
-                    mAssociatedCourses = mViewModel.getAssociatedCourses(mTermId);
+                    mAssociatedCourses = mViewModel.getAssociatedCourses();
                     List<Course> associatedCourses = mAssociatedCourses.getValue();
                     adapter.submitList(associatedCourses);
                 }

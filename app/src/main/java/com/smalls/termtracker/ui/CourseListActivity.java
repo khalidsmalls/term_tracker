@@ -15,13 +15,18 @@ import com.smalls.termtracker.R;
 public class CourseListActivity extends AppCompatActivity
         implements CourseListFragment.OnCourseSelectedListener {
     private final String TERM_ID = "term_id";
-    private final String COURSE_ID = "course_id";
     private int mTermId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Course List");
+        }
+
+        FloatingActionButton fab = findViewById(R.id.add_course_fab);
 
         mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
@@ -34,15 +39,15 @@ public class CourseListActivity extends AppCompatActivity
         mBundle.putInt(TERM_ID, mTermId);
         fragment.setArguments(mBundle);
 
-        transaction.commit();
-
-        FloatingActionButton fab = findViewById(R.id.add_course_fab);
         fab.setOnClickListener(onAddCourseClick);
+
+        transaction.commit();
     }
 
     @Override
     public void onCourseSelected(int courseId) {
         Intent intent = new Intent(getApplicationContext(), CourseDetailActivity.class);
+        String COURSE_ID = "course_id";
         intent.putExtra(COURSE_ID, courseId);
         intent.putExtra(TERM_ID, mTermId);
         startActivity(intent);

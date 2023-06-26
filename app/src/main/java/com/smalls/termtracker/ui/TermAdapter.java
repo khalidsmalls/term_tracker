@@ -19,14 +19,10 @@ import java.util.List;
 public class TermAdapter extends ListAdapter<Term, TermAdapter.ViewHolder> {
     private static TermListFragment.OnTermSelectedListener mListener;
 
-    private final LiveData<List<Term>> mTerms;
-
     public TermAdapter(
-            LiveData<List<Term>> terms,
             TermListFragment.OnTermSelectedListener listener
     ) {
         super(new TermDiff());
-        mTerms = terms;
         mListener = listener;
     }
 
@@ -66,21 +62,10 @@ public class TermAdapter extends ListAdapter<Term, TermAdapter.ViewHolder> {
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (mTerms.getValue() != null) {
-            String text = mTerms.getValue().get(position).getTitle();
-            holder.getTextView().setText(text);
-            holder.getTextView().setTag(mTerms.getValue().get(position).getId());
-            holder.getTextView().setOnClickListener(TermClickListener);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mTerms.getValue() != null) {
-            return mTerms.getValue().size();
-        } else {
-            return 0;
-        }
+        Term current = getItem(position);
+        holder.getTextView().setText(current.getTitle());
+        holder.getTextView().setTag(current.getId());
+        holder.getTextView().setOnClickListener(TermClickListener);
     }
 
     static class TermDiff extends DiffUtil.ItemCallback<Term> {

@@ -18,15 +18,11 @@ import java.util.List;
 
 public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder> {
     private static CourseListFragment.OnCourseSelectedListener mListener;
-    private final LiveData<List<Course>> mAssociatedCourses;
-    private int mCourseId;
 
     public CourseAdapter(
-            LiveData<List<Course>> mCourses,
             CourseListFragment.OnCourseSelectedListener listener
     ) {
         super(new CourseDiff());
-        mAssociatedCourses = mCourses;
         mListener = listener;
     }
 
@@ -52,11 +48,10 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (mAssociatedCourses != null) {
-            mCourseId = mAssociatedCourses.getValue().get(position).getId();
-            holder.getTextView().setText(mAssociatedCourses.getValue().get(position).getTitle());
-            holder.getTextView().setOnClickListener(CourseClickListener);
-        }
+        Course current = getItem(position);
+        holder.getTextView().setText(current.getTitle());
+        holder.getTextView().setTag(current.getId());
+        holder.getTextView().setOnClickListener(CourseClickListener);
     }
 
     private static class CourseDiff extends DiffUtil.ItemCallback<Course> {
@@ -86,6 +81,7 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
     private final View.OnClickListener CourseClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            int mCourseId = (int) v.getTag();
             mListener.onCourseSelected(mCourseId);
         }
     };

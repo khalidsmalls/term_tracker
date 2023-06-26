@@ -27,11 +27,9 @@ public interface AssessmentDao {
     @Query("DELETE FROM assessments")
     void deleteAll();
 
-    @Query("SELECT * FROM assessments")
-    LiveData<List<Assessment>> getAllAssessments();
     @Query("DELETE FROM assessments WHERE courseId = :courseId")
     void deleteAssociatedAssessments(int courseId);
 
     @Query("SELECT * FROM assessments WHERE courseId = :courseId")
-    List<Assessment> getAssociatedAssessments(int courseId);
+    LiveData<List<Assessment>> getAssociatedAssessments(int courseId);
 }

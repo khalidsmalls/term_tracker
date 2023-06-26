@@ -13,6 +13,12 @@
         android:theme="@style/Theme.TermTracker"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AssessmentDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.AssessmentListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.CourseListActivity"
             android:exported="false" />
         <activity

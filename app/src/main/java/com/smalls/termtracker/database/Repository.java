@@ -14,15 +14,13 @@ import com.smalls.termtracker.entity.Term;
 import java.util.List;
 
 public class Repository {
-
     private final AssessmentDao mAssessmentDao;
     private final CourseDao mCourseDao;
     private final TermDao mTermDao;
-    private LiveData<List<Term>> mAllTerms;
-    private LiveData<List<Course>> mAllCourses;
-    private LiveData<List<Assessment>> mAllAssessments;
+    private final LiveData<List<Term>> mAllTerms;
+    private final LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mAssociatedCourses;
-    private List<Assessment> mAssociatedAssessments;
+    private LiveData<List<Assessment>> mAssociatedAssessments;
 
     public Repository(Application application) {
         TermDatabase db = TermDatabase.getDatabase(application);
@@ -31,7 +29,6 @@ public class Repository {
         mTermDao = db.termDao();
         mAllTerms = mTermDao.getAllTerms();
         mAllCourses = mCourseDao.getAllCourses();
-        mAllAssessments = mAssessmentDao.getAllAssessments();
 
         try {
             Thread.sleep(1000);
@@ -41,30 +38,50 @@ public class Repository {
     }
 
     public LiveData<List<Term>> getAllTerms() {
-        TermDatabase.databaseWriteExecutor.execute(() -> {
-           mAllTerms = mTermDao.getAllTerms();
-        });
         return mAllTerms;
     }
 
     public LiveData<List<Course>> getAllCourses() {
+        return mAllCourses;
+    }
+
+    /**
+     * filter courses by term id
+     *
+     * @param termId the id of the term to filter courses
+     * @return the courses associated with the term
+     */
+    public LiveData<List<Course>> getAssociatedCourses(int termId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAllCourses = mCourseDao.getAllCourses();
+            mAssociatedCourses = mCourseDao.getAssociatedCourses(termId);
         });
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return mAllCourses;
+        return mAssociatedCourses;
     }
 
-   public LiveData<List<Assessment>> getAllAssessments() {
+    /**
+     * filter assessments by course id
+     *
+     * @param courseId the id of the course to filter
+     *                 assessments by
+     * @return the assessments associated with the course
+     */
+    public LiveData<List<Assessment>> getAssociatedAssessments(int courseId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAllAssessments = mAssessmentDao.getAllAssessments();
+            mAssociatedAssessments =
+                    mAssessmentDao.getAssociatedAssessments(courseId);
         });
-        return mAllAssessments;
-   }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return mAssociatedAssessments;
+    }
 
     public void insert(Term term) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
@@ -101,31 +118,6 @@ public class Repository {
             mCourseDao.deleteCourse(courseId);
         });
     }
-
-     public LiveData<List<Course>> getAssociatedCourses(int termId) {
-        TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAssociatedCourses = mCourseDao.getAssociatedCourses(termId);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-         return mAssociatedCourses;
-     }
-
-     public List<Assessment> getAssociatedAssessments(int courseId) {
-        TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAssociatedAssessments =
-                    mAssessmentDao.getAssociatedAssessments(courseId);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return mAssociatedAssessments;
-     }
 
     public void insert(Assessment assessment) {
         TermDatabase.databaseWriteExecutor.execute(() -> {

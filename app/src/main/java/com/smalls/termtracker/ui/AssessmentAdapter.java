@@ -16,25 +16,21 @@ import com.smalls.termtracker.entity.Assessment;
 
 import java.util.List;
 
-public class AssessmentAdapter extends ListAdapter<Assessment, AssessmentAdapter.ViewHolder> {
+public class AssessmentAdapter extends ListAdapter<Assessment, AssessmentAdapter.AssessmentViewHolder> {
 
     private static AssessmentListFragment.OnAssessmentSelectedListener mListener;
-    private final LiveData<List<Assessment>> mAllAssessments;
 
     public AssessmentAdapter(
-            LiveData<List<Assessment>> assessments,
             AssessmentListFragment.OnAssessmentSelectedListener listener
     ) {
         super(new AssessmentDiff());
-        mAllAssessments = assessments;
         mListener = listener;
     }
 
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class AssessmentViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
-        public ViewHolder(@NonNull View itemView) {
+        public AssessmentViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.assessment_list_item);
         }
@@ -44,31 +40,18 @@ public class AssessmentAdapter extends ListAdapter<Assessment, AssessmentAdapter
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AssessmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_assessment, parent, false);
-        return new ViewHolder(view);
+        return new AssessmentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //TODO check out enum
-        if (mAllAssessments != null) {
-            String text = String.valueOf(mAllAssessments.getValue().get(position).getType());
-            holder.getTextView().setText(text);
-            holder.getTextView().setTag(mAllAssessments.getValue().get(position).getId());
-            holder.getTextView().setOnClickListener(AssessmentClickListener);
-        }
-
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mAllAssessments.getValue() != null) {
-            return mAllAssessments.getValue().size();
-        } else {
-            return 0;
-        }
+    public void onBindViewHolder(@NonNull AssessmentViewHolder holder, int position) {
+        Assessment current = getItem(position);
+        holder.getTextView().setTag(current.getId());
+        holder.getTextView().setText(current.getType().toString());
+        holder.getTextView().setOnClickListener(AssessmentClickListener);
     }
 
     private static class AssessmentDiff extends DiffUtil.ItemCallback<Assessment> {
@@ -95,8 +78,8 @@ public class AssessmentAdapter extends ListAdapter<Assessment, AssessmentAdapter
     private final View.OnClickListener AssessmentClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String assessmentId = v.getTag().toString();
-            mListener.onAssessmentSelected(Integer.parseInt(assessmentId));
+            int assessmentId = (int) v.getTag();
+            mListener.onAssessmentSelected(assessmentId);
         }
     };
 }

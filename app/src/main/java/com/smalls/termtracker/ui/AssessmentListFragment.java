@@ -22,16 +22,13 @@ import com.smalls.termtracker.viewmodel.AssessmentListViewModel;
 import java.util.List;
 
 public class AssessmentListFragment extends Fragment {
-
-    //for AssessmentListActivity to implement
     public interface OnAssessmentSelectedListener {
         void onAssessmentSelected(int assessmentId);
     }
-
     //reference to AssessmentListActivity
     private OnAssessmentSelectedListener mListener;
-
-    private LiveData<List<Assessment>> mAllAssessments;
+    private LiveData<List<Assessment>> mAssociatedAssessments;
+    private AssessmentListViewModel mViewModel;
 
     public AssessmentListFragment() {
         // Required empty public constructor
@@ -40,15 +37,28 @@ public class AssessmentListFragment extends Fragment {
    @Override
    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        Bundle mBundle = getArguments();
+       int mCourseId;
+       if (mBundle != null) {
+            String COURSE_ID = "course_id";
+            mCourseId = mBundle.getInt(COURSE_ID);
+        } else {
+            mCourseId = 0;
+        }
+
+        mViewModel = new ViewModelProvider(
+                requireActivity(),
+                new AssessmentListViewModel.ViewModelFactory(
+                        this.requireActivity().getApplication(),
+                        mCourseId
+                )
+        ).get(AssessmentListViewModel.class);
+
+        mAssociatedAssessments = mViewModel.getAssociatedAssessments();
+
         if (context instanceof OnAssessmentSelectedListener) {
             mListener = (OnAssessmentSelectedListener) context;
-            AssessmentListViewModel viewModel =
-                    new ViewModelProvider(requireActivity()).get(AssessmentListViewModel.class);
-            mAllAssessments = viewModel.getAllAssessments();
-        } else {
-            throw new RuntimeException(
-                    context + " must implement OnAssessmentSelectedListener"
-            );
         }
    }
 
@@ -61,7 +71,8 @@ public class AssessmentListFragment extends Fragment {
                 container,
                 false
         );
-        final AssessmentAdapter adapter = new AssessmentAdapter(mAllAssessments, mListener);
+
+        final AssessmentAdapter adapter = new AssessmentAdapter(mListener);
         RecyclerView recyclerView = view.findViewById(R.id.assessment_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,10 +83,15 @@ public class AssessmentListFragment extends Fragment {
                 )
         );
 
-        mAllAssessments.observe(
+        mAssociatedAssessments.observe(
                 getViewLifecycleOwner(),
-                adapter::submitList
+                assessments -> {
+                    mAssociatedAssessments = mViewModel.getAssociatedAssessments();
+                    List<Assessment> associatedAssessments = mAssociatedAssessments.getValue();
+                    adapter.submitList(associatedAssessments);
+                }
         );
+
         return view;
     }
 

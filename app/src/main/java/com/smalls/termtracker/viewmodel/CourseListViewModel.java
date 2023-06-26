@@ -15,23 +15,16 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 public class CourseListViewModel extends AndroidViewModel {
-    private final Repository mRepo;
-    private final LiveData<List<Course>> mAllCourses;
     private final LiveData<List<Course>> mAssociatedCourses;
 
     public CourseListViewModel(@NonNull Application app, int termId) {
         super(app);
-        mRepo = new Repository(app);
-        mAllCourses = mRepo.getAllCourses();
+        Repository mRepo = new Repository(app);
         mAssociatedCourses = mRepo.getAssociatedCourses(termId);
     }
 
-    public LiveData<List<Course>> getAssociatedCourses(int termId) {
+    public LiveData<List<Course>> getAssociatedCourses() {
         return mAssociatedCourses;
-    }
-
-    public LiveData<List<Course>> getAllCourses() {
-        return mAllCourses;
     }
 
     public static class ViewModelFactory implements ViewModelProvider.Factory {
