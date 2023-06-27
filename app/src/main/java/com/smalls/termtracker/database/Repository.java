@@ -150,16 +150,4 @@ public class Repository {
         });
     }
 
-    public List<Course> getCourses() {
-        TermDatabase.databaseWriteExecutor.execute(() -> {
-            courses = mCourseDao.getCourses();
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return courses;
-    }
-
 }

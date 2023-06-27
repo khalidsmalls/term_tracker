@@ -98,16 +98,6 @@ public class CourseListFragment extends Fragment {
         return view;
     }
 
-    final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
-        @Override
-        public void onChanged(List<Course> associatedCourses) {
-            List<Course> updatedList = associatedCourses.stream()
-                    .filter(c -> c.getTermId() == mTermId)
-                    .collect(Collectors.toList());
-            adapter.submitList(updatedList);
-        }
-    };
-
     @Override
     public void onDetach() {
         super.onDetach();
