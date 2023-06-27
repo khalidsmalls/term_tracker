@@ -1,6 +1,5 @@
 package com.smalls.termtracker.ui;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,25 +17,14 @@ import java.util.List;
 
 public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder> {
     private static CourseListFragment.OnCourseSelectedListener mListener;
-    //private final LiveData<List<Course>> mAllCourses;
-    private final List<Course> mAssociatedCourses;
-    private final int mTermId;
-    private int mCourseId;
 
     public CourseAdapter(
-            List<Course> courses,
-            CourseListFragment.OnCourseSelectedListener listener,
-            int termId
+            CourseListFragment.OnCourseSelectedListener listener
     ) {
         super(new CourseDiff());
-        mAssociatedCourses = courses;
         mListener = listener;
-        mTermId = termId;
     }
 
-    /**
-     * nested ViewHolder class
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
@@ -59,37 +47,10 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (mAssociatedCourses != null) {
-            holder.getTextView().setText(mAssociatedCourses.get(position).getTitle());
-            holder.getTextView().setOnClickListener(CourseClickListener);
-//            List<Course> associatedCourses = mAllCourses.stream()
-//                    .filter(c -> c.getTermId() == mTermId)
-//                    .collect(Collectors.toList());
-
-//            String text = associatedCourses.get(position).getTitle();
-//            mCourseId = associatedCourses.get(position).getId();
-
-            //String text = mAllCourses.get(position).getTitle();
-            //mCourseId = mAllCourses.get(position).getId();
-            //holder.getTextView().setText(text);
-            //holder.getTextView().setOnClickListener(CourseClickListener);
-
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        Log.d("getItemCount", String.valueOf(mAssociatedCourses.size()));
-        return mAssociatedCourses.size();
-//        if (mAssociatedCourses != null) {
-//            //return mAllCourses.size();
-//            return (int) mAssociatedCourses
-//                    .stream()
-//                    .filter(c -> c.getTermId() == mTermId)
-//                    .count();
-//        } else {
-//            return 0;
-//        }
+        Course current = getItem(position);
+        holder.getTextView().setText(current.getTitle());
+        holder.getTextView().setTag(current.getId());
+        holder.getTextView().setOnClickListener(CourseClickListener);
     }
 
     private static class CourseDiff extends DiffUtil.ItemCallback<Course> {
@@ -119,11 +80,9 @@ public class CourseAdapter extends ListAdapter<Course, CourseAdapter.ViewHolder>
     private final View.OnClickListener CourseClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            int mCourseId = (int) v.getTag();
             mListener.onCourseSelected(mCourseId);
         }
     };
-
-
-
 
 }

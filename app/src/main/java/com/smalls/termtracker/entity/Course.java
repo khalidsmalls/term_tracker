@@ -48,6 +48,25 @@ public class Course {
     @ColumnInfo(name = "termId")
     private final int mTermId;
 
+    public enum MStatus {
+        IN_PROGRESS(0),
+        COMPLETED(1),
+        DROPPED(2),
+        PLAN_TO_TAKE(3);
+
+        public final int value;
+        MStatus(int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+    }
+
+    private final MStatus mStatus;
+
     public Course(
             @NonNull String title,
             @NonNull Date start,
@@ -56,7 +75,8 @@ public class Course {
             String instructorPhone,
             String instructorEmail,
             String optionalNote,
-            int termId
+            int termId,
+            MStatus status
     ) {
         this.mId = 0;
         this.mTitle = title;
@@ -67,6 +87,7 @@ public class Course {
         this.mInstructorEmail = instructorEmail;
         this.mOptionalNote = optionalNote;
         this.mTermId = termId;
+        this.mStatus = status;
     }
 
     @Ignore
@@ -79,7 +100,8 @@ public class Course {
            String instructorPhone,
            String instructorEmail,
            String optionalNote,
-           int termId
+           int termId,
+           MStatus status
     ) {
         this.mId = id;
         this.mTitle = title;
@@ -90,6 +112,7 @@ public class Course {
         this.mInstructorEmail = instructorEmail;
         this.mOptionalNote = optionalNote;
         this.mTermId = termId;
+        this.mStatus = status;
     }
 
     public int getId() {
@@ -130,6 +153,10 @@ public class Course {
 
     public int getTermId() {
         return mTermId;
+    }
+
+    public MStatus getStatus() {
+       return mStatus;
     }
 
 }

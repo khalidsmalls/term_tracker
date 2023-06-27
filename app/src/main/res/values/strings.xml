@@ -16,4 +16,17 @@
     <string name="term_added">Term Added</string>
     <string name="new_course">New Course</string>
     <string name="view_assessments">View Assessments</string>
+    <string name="add_assessment_button">add assessment button</string>
+    <string name="add_course_button">add course button</string>
+    <string name="objective">Objective</string>
+    <string name="performance">Performance</string>
+    <string name="assessment_type">Assessment Type</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="status">Status</string>
+    <string name="in_progress">In Progress</string>
+    <string name="completed">Completed</string>
+    <string name="share_optional_note">Share Optional Note</string>
+    <string name="channel_name">TermChannel</string>
+    <string name="channnel_description">Notifications for TermTracker app</string>
 </resources>

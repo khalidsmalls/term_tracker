@@ -1,7 +1,6 @@
 package com.smalls.termtracker.database;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -15,14 +14,13 @@ import com.smalls.termtracker.entity.Term;
 import java.util.List;
 
 public class Repository {
-
     private final AssessmentDao mAssessmentDao;
     private final CourseDao mCourseDao;
     private final TermDao mTermDao;
-    private LiveData<List<Term>> mAllTerms;
-    private LiveData<List<Course>> mAllCourses;
-    private LiveData<List<Assessment>> mAllAssessments;
-    private List<Course> courses;
+    private final LiveData<List<Term>> mAllTerms;
+    //private final LiveData<List<Course>> mAllCourses;
+    private LiveData<List<Course>> mAssociatedCourses;
+    private LiveData<List<Assessment>> mAssociatedAssessments;
 
     public Repository(Application application) {
         TermDatabase db = TermDatabase.getDatabase(application);
@@ -30,8 +28,7 @@ public class Repository {
         mCourseDao = db.courseDao();
         mTermDao = db.termDao();
         mAllTerms = mTermDao.getAllTerms();
-        mAllCourses = mCourseDao.getAllCourses();
-        mAllAssessments = mAssessmentDao.getAllAssessments();
+        //mAllCourses = mCourseDao.getAllCourses();
 
         try {
             Thread.sleep(1000);
@@ -41,30 +38,50 @@ public class Repository {
     }
 
     public LiveData<List<Term>> getAllTerms() {
-        TermDatabase.databaseWriteExecutor.execute(() -> {
-           mAllTerms = mTermDao.getAllTerms();
-        });
         return mAllTerms;
     }
 
-    public LiveData<List<Course>> getAllCourses() {
+//    public LiveData<List<Course>> getAllCourses() {
+//        return mAllCourses;
+//    }
+
+    /**
+     * filter courses by term id
+     *
+     * @param termId the id of the term to filter courses
+     * @return the courses associated with the term
+     */
+    public LiveData<List<Course>> getAssociatedCourses(int termId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAllCourses = mCourseDao.getAllCourses();
+            mAssociatedCourses = mCourseDao.getAssociatedCourses(termId);
         });
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return mAllCourses;
+        return mAssociatedCourses;
     }
 
-   public LiveData<List<Assessment>> getAllAssessments() {
+    /**
+     * filter assessments by course id
+     *
+     * @param courseId the id of the course to filter
+     *                 assessments by
+     * @return the assessments associated with the course
+     */
+    public LiveData<List<Assessment>> getAssociatedAssessments(int courseId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
-            mAllAssessments = mAssessmentDao.getAllAssessments();
+            mAssociatedAssessments =
+                    mAssessmentDao.getAssociatedAssessments(courseId);
         });
-        return mAllAssessments;
-   }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return mAssociatedAssessments;
+    }
 
     public void insert(Term term) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
@@ -102,10 +119,6 @@ public class Repository {
         });
     }
 
-    public void deleteAllCourses() {
-        TermDatabase.databaseWriteExecutor.execute(mCourseDao::deleteAllCourses);
-    }
-
     public void insert(Assessment assessment) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
             mAssessmentDao.insert(assessment);
@@ -124,10 +137,6 @@ public class Repository {
         });
     }
 
-    public void deleteAllAssessments() {
-        TermDatabase.databaseWriteExecutor.execute(mAssessmentDao::deleteAll);
-    }
-
     public void deleteAssociatedCourses(int termId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
                     mTermDao.deleteAssociatedCourses(termId);
@@ -135,7 +144,7 @@ public class Repository {
         );
     }
 
-    public void deleteAssociatedAssessmentes(int courseId) {
+    public void deleteAssociatedAssessments(int courseId) {
         TermDatabase.databaseWriteExecutor.execute(() -> {
             mAssessmentDao.deleteAssociatedAssessments(courseId);
         });

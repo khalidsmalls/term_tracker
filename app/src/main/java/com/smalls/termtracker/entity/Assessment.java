@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -52,13 +53,29 @@ public class Assessment {
     public Assessment(
             @NonNull Date start,
             @NonNull Date end,
-            int courseId,
-            MType type
-    ) {
+            MType type,
+            int courseId
+            ) {
         this.mStart = start;
         this.mEnd = end;
-        this.mCourseId = courseId;
         this.mType = type;
+        this.mCourseId = courseId;
+        this.mId = 0;
+    }
+
+    @Ignore
+    public Assessment(
+            int id,
+            @NonNull Date start,
+            @NonNull Date end,
+            MType type,
+            int courseId
+    ) {
+        this.mId = id;
+        this.mStart = start;
+        this.mEnd = end;
+        this.mType = type;
+        this.mCourseId = courseId;
     }
 
     public void setId(int id) {

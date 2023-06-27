@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
-            android:text="Start Date"
+            android:text="@string/start_date"
             android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/course_title" />
@@ -53,7 +53,7 @@
             app:layout_constraintBaseline_toBaselineOf="@id/course_start_date"
             app:layout_constraintStart_toEndOf="@id/course_start_date"
             android:autofillHints=""
-            android:inputType="text" />
+            android:inputType="date" />
 
         <TextView
             android:id="@+id/course_end_date"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
-            android:text="End Date"
+            android:text="@string/end_date"
             android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/course_start_date" />
@@ -77,7 +77,70 @@
             app:layout_constraintBaseline_toBaselineOf="@id/course_end_date"
             app:layout_constraintStart_toStartOf="@id/course_start_edittext"
             android:autofillHints=""
-            android:inputType="text" />
+            android:inputType="date" />
+
+        <RadioGroup
+            android:id="@+id/course_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginVertical="30dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintTop_toBottomOf="@id/course_end_edittext" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/status"
+                android:textSize="25sp"/>
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radio_in_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_marginStart="25dp"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:textSize="20sp"
+                android:checked="true"
+                android:text="@string/in_progress"
+                android:buttonTint="@color/colorPrimaryDark" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radio_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_marginStart="25dp"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:textSize="20sp"
+                android:text="@string/completed"
+                android:buttonTint="@color/colorPrimaryDark" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radio_dropped"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_marginStart="25dp"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:textSize="20sp"
+                android:text="Dropped"
+                android:buttonTint="@color/colorPrimaryDark" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radio_plan_to_take"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:layout_marginStart="25dp"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:textSize="20sp"
+                android:text="Plan to take"
+                android:buttonTint="@color/colorPrimaryDark" />
+
+        </RadioGroup>
 
         <TextView
             android:id="@+id/instructor_name"
@@ -89,7 +152,7 @@
             android:text="Course Instructor"
             android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/course_end_date" />
+            app:layout_constraintTop_toBottomOf="@id/course_radio_group" />
 
         <EditText
             android:id="@+id/course_instructor_edittext"
@@ -165,6 +228,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:textColor="@color/black"
+            android:textSize="25sp"
             android:maxLines="10"
             android:scrollbars="vertical"
             app:layout_constraintTop_toBottomOf="@id/optional_note_textview"/>

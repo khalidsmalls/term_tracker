@@ -36,11 +36,6 @@ public class TermListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * initialize mListener
-     *
-     * @param context TermListActivity
-     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -78,7 +73,7 @@ public class TermListFragment extends Fragment {
                 container,
                 false
         );
-        final TermAdapter adapter = new TermAdapter(mAllTerms, mListener);
+        final TermAdapter adapter = new TermAdapter(mListener);
         RecyclerView recyclerView = view.findViewById(R.id.term_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

@@ -23,10 +23,14 @@ import java.util.concurrent.Executors;
                 Course.class,
                 Term.class
         },
-        version = 34,
+        version = 39,
         exportSchema = false
 )
-@TypeConverters({DateConverter.class, AssessmentTypeConverter.class})
+@TypeConverters({
+        DateConverter.class,
+        AssessmentTypeConverter.class,
+        CourseStatusTypeConverter.class
+})
 public abstract class TermDatabase extends RoomDatabase {
 
     public abstract AssessmentDao assessmentDao();

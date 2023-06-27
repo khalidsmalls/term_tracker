@@ -11,12 +11,13 @@ import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.smalls.termtracker.R;
@@ -30,6 +31,7 @@ import java.util.Locale;
 
 public class CourseDetailActivity extends AppCompatActivity
         implements DeleteDialogFragment.onDeleteDialogListener {
+    private final String COURSE_ID = "course_id";
     private EditText mTitleEditText;
     private EditText mStartDateEditText;
     private EditText mEndDateEditText;
@@ -37,6 +39,11 @@ public class CourseDetailActivity extends AppCompatActivity
     private EditText mInstructorPhoneEditText;
     private EditText mInstructorEmailEditText;
     private EditText mOptionalNoteEditText;
+    private RadioGroup mRadioGroup;
+    private RadioButton mInProgress;
+    private RadioButton mCompleted;
+    private RadioButton mDropped;
+    private RadioButton mPlanToTake;
     private int mCourseId;
     private int mTermId;
     private CourseDetailViewModel mViewModel;
@@ -50,13 +57,18 @@ public class CourseDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Course Detail");
+        }
+
         //intent will come from onCourseClickListener in the course list in the
         //term detail view
-        mCourseId = getIntent().getIntExtra("COURSE_ID", 0);
-        mTermId = getIntent().getIntExtra("TERM_ID", 0);
+        mCourseId = getIntent().getIntExtra(COURSE_ID, 0);
+        String TERM_ID = "term_id";
+        mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
         mViewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
-        LiveData<List<Course>> mAllCourses = mViewModel.getAllCourses();
+        LiveData<List<Course>> mAssociatedCourses = mViewModel.getAssociatedCourses();
 
         mDateFormatter = new SimpleDateFormat("MM/dd/yy", Locale.US);
         mTitleEditText = findViewById(R.id.course_title_edittext);
@@ -68,6 +80,11 @@ public class CourseDetailActivity extends AppCompatActivity
         mOptionalNoteEditText = findViewById(R.id.optional_note_edittext);
         Button mSaveBtn = findViewById(R.id.new_term_save_btn);
         Button mViewAssessmentsBtn = findViewById(R.id.view_assessments_btn);
+        mRadioGroup = findViewById(R.id.course_radio_group);
+        mInProgress = findViewById(R.id.radio_in_progress);
+        mCompleted = findViewById(R.id.radio_completed);
+        mDropped = findViewById(R.id.radio_dropped);
+        mPlanToTake = findViewById(R.id.radio_plan_to_take);
         mCalendar = Calendar.getInstance();
         mStartDateEditText.setTag("START_DATE");
         mEndDateEditText.setTag("END_DATE");
@@ -75,12 +92,31 @@ public class CourseDetailActivity extends AppCompatActivity
         mStartDateEditText.setOnClickListener(onDateFieldClicked);
         mEndDateEditText.setOnClickListener(onDateFieldClicked);
         mSaveBtn.setOnClickListener(onSaveClicked);
+        mViewAssessmentsBtn.setOnClickListener(onViewAssessmentsClick);
 
-        mAllCourses.observe(
+        if (mCourseId == 0) {
+            mViewAssessmentsBtn.setVisibility(View.GONE);
+        }
+
+        mAssociatedCourses.observe(
                 this,
                 courses -> {
                     for (Course course : courses) {
                         if (course.getId() == mCourseId) {
+                            switch (course.getStatus()) {
+                                case IN_PROGRESS:
+                                    mInProgress.setChecked(true);
+                                    break;
+                                case COMPLETED:
+                                    mCompleted.setChecked(true);
+                                    break;
+                                case DROPPED:
+                                    mDropped.setChecked(true);
+                                    break;
+                                case PLAN_TO_TAKE:
+                                    mPlanToTake.setChecked(true);
+                                    break;
+                            }
                             mTitleEditText.setText(course.getTitle());
                             mStartDateEditText.setText(
                                     mDateFormatter.format(course.getStart())
@@ -98,12 +134,10 @@ public class CourseDetailActivity extends AppCompatActivity
         );
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mCourseId != 0) {
-            getMenuInflater().inflate(R.menu.delete, menu);
+            getMenuInflater().inflate(R.menu.course_detail, menu);
         }
         return true;
     }
@@ -115,6 +149,17 @@ public class CourseDetailActivity extends AppCompatActivity
             DeleteDialogFragment dialog = new DeleteDialogFragment(
                     getString(R.string.delete_course)
             );
+            dialog.show(manager, "deleteDialog");
+        } else if (item.getItemId() == R.id.action_share_note) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Optional Note");
+            intent.putExtra(Intent.EXTRA_TEXT, mOptionalNoteEditText.getText());
+
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                Intent chooser = Intent.createChooser(intent, "Share Optional Note");
+                startActivity(chooser);
+            }
         }
         return true;
     }
@@ -126,7 +171,7 @@ public class CourseDetailActivity extends AppCompatActivity
         finish();
         Toast.makeText(
                 this,
-                getString(R.string.delete_course),
+                getString(R.string.course_deleted),
                 Toast.LENGTH_SHORT
         ).show();
     }
@@ -166,10 +211,22 @@ public class CourseDetailActivity extends AppCompatActivity
         public void onClick(View v) {
             if (validateFields()) {
                 Course course;
+                Course.MStatus mStatus = null;
+                int mRadioId = mRadioGroup.getCheckedRadioButtonId();
+                if (mRadioId != -1) {
+                    if (mRadioId == R.id.radio_in_progress) {
+                        mStatus = Course.MStatus.IN_PROGRESS;
+                    } else if (mRadioId == R.id.radio_completed) {
+                        mStatus = Course.MStatus.COMPLETED;
+                    } else if (mRadioId == R.id.radio_dropped) {
+                        mStatus = Course.MStatus.DROPPED;
+                    } else if (mRadioId == R.id.radio_plan_to_take) {
+                        mStatus = Course.MStatus.PLAN_TO_TAKE;
+                    }
+                }
                 if (mCourseId == 0) {
                     //new course
                     course = new Course(
-                            mCourseId,
                             mTitleEditText.getText().toString(),
                             mStartDate,
                             mEndDate,
@@ -177,7 +234,8 @@ public class CourseDetailActivity extends AppCompatActivity
                             mInstructorPhoneEditText.getText().toString(),
                             mInstructorEmailEditText.getText().toString(),
                             mOptionalNoteEditText.getText().toString(),
-                            mTermId
+                            mTermId,
+                            mStatus
                     );
                     mViewModel.insert(course);
                     Toast.makeText(
@@ -203,7 +261,8 @@ public class CourseDetailActivity extends AppCompatActivity
                                 mInstructorPhoneEditText.getText().toString(),
                                 mInstructorEmailEditText.getText().toString(),
                                 mOptionalNoteEditText.getText().toString(),
-                                mTermId
+                                mTermId,
+                                mStatus
                         );
                         mViewModel.update(course);
                         Toast.makeText(
@@ -219,6 +278,12 @@ public class CourseDetailActivity extends AppCompatActivity
             }
         }
     };
+
+   private final View.OnClickListener onViewAssessmentsClick = v -> {
+        Intent intent = new Intent(getApplicationContext(), AssessmentListActivity.class);
+        intent.putExtra(COURSE_ID, mCourseId);
+        startActivity(intent);
+   };
 
     private boolean validateFields() {
         return !TextUtils.isEmpty(mTitleEditText.getText()) &&

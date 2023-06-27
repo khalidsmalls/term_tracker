@@ -15,7 +15,6 @@ import com.smalls.termtracker.R;
 public class TermListActivity extends AppCompatActivity
         implements TermListFragment.OnTermSelectedListener {
     public static final String TERM_ID = "term_id";
-    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +32,7 @@ public class TermListActivity extends AppCompatActivity
         fragmentTransaction.add(R.id.term_list_fragment_container, fragment);
         fragmentTransaction.commit();
 
-        fab = findViewById(R.id.add_term_fab);
+        FloatingActionButton fab = findViewById(R.id.add_term_fab);
         fab.setOnClickListener(onAddTermClick);
     }
 
