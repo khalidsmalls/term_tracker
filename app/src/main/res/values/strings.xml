@@ -27,4 +27,6 @@
     <string name="in_progress">In Progress</string>
     <string name="completed">Completed</string>
     <string name="share_optional_note">Share Optional Note</string>
+    <string name="channel_name">TermChannel</string>
+    <string name="channnel_description">Notifications for TermTracker app</string>
 </resources>

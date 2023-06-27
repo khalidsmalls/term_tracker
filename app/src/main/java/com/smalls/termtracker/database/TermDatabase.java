@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
                 Course.class,
                 Term.class
         },
-        version = 38,
+        version = 39,
         exportSchema = false
 )
 @TypeConverters({

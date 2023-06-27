@@ -68,7 +68,7 @@ public class CourseDetailActivity extends AppCompatActivity
         mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
         mViewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
-        LiveData<List<Course>> mAllCourses = mViewModel.getAllCourses();
+        LiveData<List<Course>> mAssociatedCourses = mViewModel.getAssociatedCourses();
 
         mDateFormatter = new SimpleDateFormat("MM/dd/yy", Locale.US);
         mTitleEditText = findViewById(R.id.course_title_edittext);
@@ -98,7 +98,7 @@ public class CourseDetailActivity extends AppCompatActivity
             mViewAssessmentsBtn.setVisibility(View.GONE);
         }
 
-        mAllCourses.observe(
+        mAssociatedCourses.observe(
                 this,
                 courses -> {
                     for (Course course : courses) {

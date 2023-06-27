@@ -18,7 +18,7 @@ public class Repository {
     private final CourseDao mCourseDao;
     private final TermDao mTermDao;
     private final LiveData<List<Term>> mAllTerms;
-    private final LiveData<List<Course>> mAllCourses;
+    //private final LiveData<List<Course>> mAllCourses;
     private LiveData<List<Course>> mAssociatedCourses;
     private LiveData<List<Assessment>> mAssociatedAssessments;
 
@@ -28,7 +28,7 @@ public class Repository {
         mCourseDao = db.courseDao();
         mTermDao = db.termDao();
         mAllTerms = mTermDao.getAllTerms();
-        mAllCourses = mCourseDao.getAllCourses();
+        //mAllCourses = mCourseDao.getAllCourses();
 
         try {
             Thread.sleep(1000);
@@ -41,9 +41,9 @@ public class Repository {
         return mAllTerms;
     }
 
-    public LiveData<List<Course>> getAllCourses() {
-        return mAllCourses;
-    }
+//    public LiveData<List<Course>> getAllCourses() {
+//        return mAllCourses;
+//    }
 
     /**
      * filter courses by term id
