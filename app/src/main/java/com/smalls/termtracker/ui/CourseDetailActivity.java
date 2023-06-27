@@ -67,7 +67,14 @@ public class CourseDetailActivity extends AppCompatActivity
         String TERM_ID = "term_id";
         mTermId = getIntent().getIntExtra(TERM_ID, 0);
 
-        mViewModel = new ViewModelProvider(this).get(CourseDetailViewModel.class);
+        mViewModel = new ViewModelProvider(
+                this,
+                new CourseDetailViewModel.ViewModelFactory(
+                        getApplication(),
+                        mCourseId
+                )
+        ).get(CourseDetailViewModel.class);
+
         LiveData<List<Course>> mAssociatedCourses = mViewModel.getAssociatedCourses();
 
         mDateFormatter = new SimpleDateFormat("MM/dd/yy", Locale.US);
